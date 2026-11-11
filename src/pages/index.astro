@@ -1,4 +1,16 @@
 ---
+import { getCollection, getEntry } from 'astro:content';
+import { actions } from 'astro:actions';
+
+const zodPosts = await getCollection('zodPosts');
+const valibotPosts = await getCollection('valibotPosts');
+const imagePosts = await getCollection('imagePosts');
+const legacyApiPosts = await getCollection('legacyApiPosts');
+const settings = await getEntry('settings', 'site');
+const resolvedAuthor = await getEntry(valibotPosts[0].data.author);
+const legacyAuthor = await getEntry(legacyApiPosts[0].data.author);
+const feedbackResult = Astro.getActionResult(actions.feedback);
+const legacyFeedbackResult = Astro.getActionResult(actions.legacyFeedback);
 ---
 
 <html lang="en">
@@ -8,9 +20,60 @@
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Astro validator playground</title>
+		<style>
+			:root { font-family: system-ui, sans-serif; color: #292238; background: #faf7ff; }
+			body { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem; }
+			section { margin-block: 2.5rem; padding: 1.5rem; background: white; border: 1px solid #e9d5ff; border-radius: 1rem; }
+		h1, h2 { color: #581c87; }
+		li { margin-block: 0.75rem; }
+		img { max-width: 100%; height: auto; border-radius: 0.5rem; }
+		label { display: block; margin-block: 1rem 0.4rem; }
+		input, textarea, button { font: inherit; padding: 0.6rem; }
+		</style>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<main>
+			<h1>Astro validator playground</h1>
+			<p>Run this starter to experiment with the validator APIs in <a href="https://github.com/withastro/astro/pull/17892">Astro PR #17892</a>. Examples are in <code>src/content.config.ts</code> and <code>src/actions/index.ts</code>.</p>
+			<section>
+				<h2>Zod collection</h2>
+				<ul>{zodPosts.map((post) => <li><strong>{post.data.title}</strong> · {post.data.published.toLocaleDateString()} · {post.data.tags.join(', ')}</li>)}</ul>
+			</section>
+			<section>
+				<h2>Valibot collection with a reference transform</h2>
+				<ul>{valibotPosts.map((post) => <li><strong>{post.data.title}</strong> by {resolvedAuthor?.data.name} {post.data.draft ? '(draft)' : ''}</li>)}</ul>
+			</section>
+			<section>
+				<h2>Image helper in a transform</h2>
+				{imagePosts.map((post) => <article><h3>{post.data.title}</h3><img src={post.data.cover.src} width={post.data.cover.width} height={post.data.cover.height} alt="Pink illustration labeled Validator playground" /></article>)}
+			</section>
+			<section>
+				<h2>Legacy image and reference signatures</h2>
+				{legacyApiPosts.map((post) => <article><h3>{post.data.title}</h3><p>Author: {legacyAuthor?.data.name}</p><img src={post.data.cover.src} width={post.data.cover.width} height={post.data.cover.height} alt="Pink illustration labeled Legacy API example" /></article>)}
+			</section>
+			<section>
+				<h2>JSON-backed collection</h2>
+				<p>{settings?.data.title} allows up to {settings?.data.maxItems} items. Inspect <code>.astro/collections/settings.schema.json</code> after running <code>pnpm astro sync</code>.</p>
+			</section>
+			<section>
+				<h2>Form action with parseFormData()</h2>
+				<form method="POST" action={actions.feedback}>
+					<label for="message">Feedback message</label>
+					<textarea id="message" name="message" minlength="10" required></textarea>
+					<button type="submit">Submit form example</button>
+				</form>
+				{feedbackResult?.data && <p role="status">Parsed message: {feedbackResult.data.accepted}</p>}
+				{feedbackResult?.error && <p role="alert">{feedbackResult.error.message}</p>}
+				<h3>Deprecated form input schema</h3>
+				<form method="POST" action={actions.legacyFeedback}>
+					<label for="legacy-message">Feedback message</label>
+					<textarea id="legacy-message" name="message" minlength="10" required></textarea>
+					<button type="submit">Submit deprecated example</button>
+				</form>
+				{legacyFeedbackResult?.data && <p role="status">Parsed message: {legacyFeedbackResult.data.accepted}</p>}
+				{legacyFeedbackResult?.error && <p role="alert">{legacyFeedbackResult.error.message}</p>}
+			</section>
+		</main>
 	</body>
 </html>

@@ -12,6 +12,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.4.10"
+    "@astrojs/node": "^11.1.11",
+    "astro": "https://pkg.pr.new/astro@17892",
+    "valibot": "^1.5.0",
+    "zod": "^4.6.7"
   }
 }

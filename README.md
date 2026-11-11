@@ -1,43 +1,27 @@
-# Astro Starter Kit: Minimal
+# Astro validator playground
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+This repository is a runnable starter for experimenting with the validator APIs in [Astro PR #17892](https://github.com/withastro/astro/pull/17892) and [roadmap PR #1438](https://github.com/withastro/roadmap/pull/1438). It includes content collections that use Zod and Valibot, examples of image and reference helpers, JSON Schema generation, and action input parsing.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Run the starter
 
-## 🚀 Project Structure
+You need Node.js 22.23.4 or later and pnpm.
 
-Inside of your Astro project, you'll see the following folders and files:
+1. Install dependencies with `pnpm install`.
+2. Generate the content types with `pnpm astro sync`.
+3. Start the site with `pnpm dev`.
+4. Open the local URL printed by Astro.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## Explore the examples
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+- `src/content.config.ts` defines the collections. Compare Zod and Valibot schemas, the transform-based `image()` and `reference()` helpers, and the legacy Zod schema signatures.
+- `.astro/content.d.ts` shows the generated content types. Run `pnpm astro sync` to create it. The file now maps each collection name to inferred data instead of declaring the full content API.
+- `src/content/` contains sample entries for each collection. Edit a field or add an entry to try validation and type inference.
+- `src/actions/index.ts` defines JSON and form actions. The JSON action uses Valibot. Compare the form action that parses `FormData` with the preview `parseFormData()` helper and the deprecated Zod `input` schema.
+- `src/pages/index.astro` renders entries from each collection and forms that call the sample form actions. These actions return parsed data. They do not store or send feedback.
+- `settings` is a JSON-backed collection. Zod, Valibot, and other validators can expose JSON Schema through Standard Schema's JSON Schema capability. Astro generates `.astro/collections/settings.schema.json` for this Zod schema. The Valibot schemas in `authors` and `valibotPosts` demonstrate that validation works even when the validator does not provide JSON Schema generation.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Share feedback
 
-Any static assets, like images, can be placed in the `public/` directory.
+These APIs are proposals and can change before release. To share feedback, open a comment on [Astro PR #17892](https://github.com/withastro/astro/pull/17892). Include the validator, the example you tried, what you expected, and what happened. A small reproduction helps identify API and type inference issues.
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+See the [validator RFC](https://github.com/withastro/roadmap/pull/1438) for the proposal and open questions.
