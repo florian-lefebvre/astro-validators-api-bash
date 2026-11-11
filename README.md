@@ -1,0 +1,1 @@
+# astro-validators-api-bash
