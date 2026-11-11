@@ -4,17 +4,17 @@ This repository is a runnable starter for experimenting with the validator APIs 
 
 ## Run the starter
 
-You need Node.js 22.23.4 or later and pnpm.
+You need Node.js 22.23.4 or later and npm.
 
-1. Install dependencies with `pnpm install`.
-2. Generate the content types with `pnpm astro sync`.
-3. Start the site with `pnpm dev`.
+1. Install dependencies with `npm install`.
+2. Generate the content types with `npm run astro sync`.
+3. Start the site with `npm run dev`.
 4. Open the local URL printed by Astro.
 
 ## Explore the examples
 
 - `src/content.config.ts` defines the collections. Compare Zod and Valibot schemas, the transform-based `image()` and `reference()` helpers, and the legacy Zod schema signatures.
-- `.astro/content.d.ts` shows the generated content types. Run `pnpm astro sync` to create it. The file now maps each collection name to inferred data instead of declaring the full content API.
+- `.astro/content.d.ts` shows the generated content types. Run `npm run astro sync` to create it. The file maps each collection name to inferred data instead of declaring the full content API.
 - `src/content/` contains sample entries for each collection. Edit a field or add an entry to try validation and type inference.
 - `src/actions/index.ts` defines JSON and form actions. The JSON action uses Valibot. Compare the form action that parses `FormData` with the preview `parseFormData()` helper and the deprecated Zod `input` schema.
 - `src/pages/index.astro` renders entries from each collection and forms that call the sample form actions. These actions return parsed data. They do not store or send feedback.
